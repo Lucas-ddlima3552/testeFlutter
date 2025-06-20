@@ -1,0 +1,29 @@
+# Diretórios gerados automaticamente
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+
+# Arquivos de dependências (gerados)
+pubspec.lock
+
+# IDEs e editores
+.vscode/
+.idea/
+*.iml
+
+# Arquivos temporários do sistema
+*.log
+*.tmp
+*.swp
+*.DS_Store
+
+# Executáveis, DLLs e outros binários (exceto a pasta executavel)
+*.exe
+*.dll
+*.pdb
+
+# Evita ignorar a pasta executavel, pois você quer subir o .exe nela
+# Então, NÃO coloque a pasta executavel aqui
+
