@@ -1,17 +1,27 @@
-flutter/ephemeral/
+# Ignore builds e caches padrão do Flutter
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.dart_tool/
+.idea/
+.vscode/
 
-# Visual Studio user-specific files.
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
+# Ignore arquivos temporários do sistema e editor
+*.log
+*.tmp
+*.temp
+*.swp
+.DS_Store
+Thumbs.db
 
-# Visual Studio build-related files.
-x64/
-x86/
+# Ignore a pasta de debug do Windows (se quiser)
+build/windows/runner/Debug/
 
-# Visual Studio cache files
-# files ending in .cache can be ignored
-*.[Cc]ache
-# but keep track of directories ending in .cache
-!*.[Cc]ache/
+# Permitir o executável e DLLs na pasta teste_cervantes_exe/Release
+!teste_cervantes_exe/Release/teste_cervantes.exe
+!teste_cervantes_exe/Release/flutter_windows.dll
+
+# Ignorar todos os outros executáveis ou DLLs fora dessa pasta
+*.exe
+*.dll

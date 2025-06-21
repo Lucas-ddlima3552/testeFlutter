@@ -19,11 +19,3 @@ pubspec.lock
 *.swp
 *.DS_Store
 
-# Executáveis, DLLs e outros binários (exceto a pasta executavel)
-*.exe
-*.dll
-*.pdb
-
-# Evita ignorar a pasta executavel, pois você quer subir o .exe nela
-# Então, NÃO coloque a pasta executavel aqui
-
