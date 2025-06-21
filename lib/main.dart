@@ -11,7 +11,7 @@ void main() {
 class Cliente {
   final int id;
   final String nome;
-  final String telefone; // Corrigido: agora é telefone
+  final int telefone;
 
   Cliente({required this.id, required this.nome, required this.telefone});
 
@@ -19,8 +19,7 @@ class Cliente {
     return Cliente(
       id: map['id'],
       nome: map['nome'],
-      telefone: map['telefone']
-          .toString(), // Convertendo para string caso venha como número
+      telefone: map['telefone'],
     );
   }
 }
@@ -51,9 +50,27 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> inserirCliente() async {
     String nome = nomeController.text.trim();
-    String telefone = telefoneController.text.trim();
+    String telefoneText = telefoneController.text.trim();
 
-    await db.insert('clientes', {'nome': nome, 'telefone': telefone});
+    if (nome.isEmpty || telefoneText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Preencha todos os campos')),
+      );
+      return;
+    }
+
+    int? telefone = int.tryParse(telefoneText);
+    if (telefone == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Telefone inválido')),
+      );
+      return;
+    }
+
+    await db.insert('clientes', {
+      'nome': nome,
+      'telefone': telefone,
+    });
 
     nomeController.clear();
     telefoneController.clear();
@@ -74,7 +91,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> editarCliente(Cliente cliente) async {
     nomeController.text = cliente.nome;
-    telefoneController.text = cliente.telefone;
+    telefoneController.text = cliente.telefone.toString();
 
     await showDialog(
       context: context,
@@ -90,7 +107,7 @@ class _MyAppState extends State<MyApp> {
             TextField(
               controller: telefoneController,
               decoration: InputDecoration(labelText: 'Telefone'),
-              keyboardType: TextInputType.phone,
+              keyboardType: TextInputType.number,
             ),
           ],
         ),
@@ -105,15 +122,34 @@ class _MyAppState extends State<MyApp> {
           ),
           ElevatedButton(
             onPressed: () async {
+              String nome = nomeController.text.trim();
+              String telefoneText = telefoneController.text.trim();
+
+              if (nome.isEmpty || telefoneText.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Preencha todos os campos')),
+                );
+                return;
+              }
+
+              int? telefone = int.tryParse(telefoneText);
+              if (telefone == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Telefone inválido')),
+                );
+                return;
+              }
+
               await db.update(
                 'clientes',
                 {
-                  'nome': nomeController.text.trim(),
-                  'telefone': telefoneController.text.trim(),
+                  'nome': nome,
+                  'telefone': telefone,
                 },
                 where: 'id = ?',
                 whereArgs: [cliente.id],
               );
+
               nomeController.clear();
               telefoneController.clear();
               Navigator.pop(context);
@@ -150,7 +186,6 @@ class _MyAppState extends State<MyApp> {
         ),
         body: TabBarView(
           children: [
-            // Aba Cadastro
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -162,8 +197,9 @@ class _MyAppState extends State<MyApp> {
                   TextField(
                     controller: telefoneController,
                     decoration: InputDecoration(
-                        labelText: 'Digite seu telefone com DDD (00) 00000-0000'),
-                    keyboardType: TextInputType.phone,
+                        labelText:
+                            'Digite seu telefone com DDD (somente números)'),
+                    keyboardType: TextInputType.number,
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
@@ -173,8 +209,6 @@ class _MyAppState extends State<MyApp> {
                 ],
               ),
             ),
-
-            // Aba Clientes (Lista)
             clientes.isEmpty
                 ? Center(child: Text('Nenhum cliente cadastrado'))
                 : ListView.builder(
